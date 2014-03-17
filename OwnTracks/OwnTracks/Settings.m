@@ -91,6 +91,9 @@
             string = dictionary[@"monitoring"];
             if (string) [self setObject:@([string integerValue]) forKey:@"monitoring_preference"];
             
+            string = dictionary[@"move_mode_on_power"];
+            if (string) [self setObject:@([string integerValue]) forKey:@"move_mode_on_power_preference"];
+
             
             string = dictionary[@"retain"];
             if (string) [self setObject:@([string integerValue]) forKey:@"retain_preference"];
@@ -142,6 +145,7 @@
                            @"mindist": [self objectForKey:@"mindist_preference"],
                            @"mintime": [self objectForKey:@"mintime_preference"],
                            @"monitoring": [self objectForKey:@"monitoring_preference"],
+                           @"move_mode_on_power": [self objectForKey:@"move_mode_on_power_preference"],
                            
                            @"retain": [self objectForKey:@"retain_preference"],
                            @"tls": [self objectForKey:@"tls_preference"],

@@ -175,10 +175,24 @@
                                    @(UIDeviceBatteryStateCharging): @"charging",
                                    @(UIDeviceBatteryStateFull): @"full"
                                    };
-    
+
     NSLog(@"App batteryLevelChanged %@ (%ld)",
           states[@([UIDevice currentDevice].batteryState)],
           (long)[UIDevice currentDevice].batteryState);
+    
+    if ( [self.settings boolForKey:@"move_mode_on_power"] == YES ) {
+        NSInteger monitoringMode;
+        if ( [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging ) {
+            monitoringMode = 2;
+        }
+        else {
+            monitoringMode = [self.settings integerForKey:@"monitoring_preference"];
+        }
+#ifdef DEBUG
+        NSLog(@"Swtiching to monitoring mode %ld.", (long)monitoringMode);
+#endif
+        [self setMonitoring:monitoringMode savePreference:NO];
+    }
 #endif
 }
 #endif
@@ -688,12 +702,19 @@
 
 - (void)setMonitoring:(NSInteger)monitoring
 {
+    [self setMonitoring:monitoring savePreference:YES];
+}
+
+- (void)setMonitoring:(NSInteger)monitoring savePreference:(BOOL)savePreference
+{
 #ifdef DEBUG
     NSLog(@"App monitoring=%ld", (long)monitoring);
 #endif
     
-    _monitoring = monitoring;
-    [self.settings setObject:@(monitoring) forKey:@"monitoring_preference"];
+    if ( savePreference == YES ) {
+        _monitoring = monitoring;
+        [self.settings setObject:@(monitoring) forKey:@"monitoring_preference"];
+    }
     
     switch (monitoring) {
         case 2:
